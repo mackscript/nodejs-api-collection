@@ -7,3 +7,5 @@ router.post("/register", register);
 router.post("/verify-otp", verifyOtp);
 
 export default router;
+
+// test
