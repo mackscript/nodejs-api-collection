@@ -6,6 +6,7 @@ import { createOtp } from "./otp.service";
 
 import * as otpRepository from '../models/auth/otp.repository'
 import bcrypt from "bcryptjs";
+import { generateAccessToken } from "../utils/jwt";
 
 interface SendOtpInput {
     email: string;
@@ -69,7 +70,11 @@ export async function verifyOtp(
     user.isEmailVerified = true
     await user.save()
 
+    const accessToken = generateAccessToken(
+        user._id.toString(),
+        user.role,
+    );
     await otpRepository.deleteOtpByEmail(email)
 
-    return user;
+    return { user, accessToken };
 }

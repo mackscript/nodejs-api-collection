@@ -1,27 +1,33 @@
-import jwt from "jsonwebtoken";
+import jwt, { type SignOptions } from "jsonwebtoken";
 
-interface JwtPayload {
+const JWT_SECRET = process.env.JWT_SECRET;
+
+const JWT_EXPIRES_IN =
+    (process.env.JWT_EXPIRES_IN || "15m") as SignOptions["expiresIn"];
+export interface AccessTokenPayload {
     userId: string;
+    role: string;
 }
 
-const getJwtSecret = (): string => {
-    const secret = process.env.JWT_SECRET;
-
-    if (!secret) {
+export function generateAccessToken(
+    userId: string,
+    role: string,
+): string {
+    if (!JWT_SECRET) {
         throw new Error("JWT_SECRET is not defined");
     }
 
-    return secret;
-};
-
-export const generateAccessToken = (userId: string): string => {
     return jwt.sign(
         {
             userId,
+            role,
         },
-        getJwtSecret(),
+        JWT_SECRET,
         {
-            expiresIn: "7d",
+            expiresIn: JWT_EXPIRES_IN,
         },
     );
-};
+}
+
+// verifyAccessToken
+// auth.middleware.ts
