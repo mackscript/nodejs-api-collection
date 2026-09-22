@@ -1,71 +1,20 @@
 import type { Request, Response } from "express";
-import { registerUser, verifyRegistrationOtp } from "../services/auth.service";
-import {
-    registerSchema,
-    verifyOtpSchema,
-} from "../utils/validation";
 
-export const register = async (
+import { sendOtp } from "../services/auth.service";
+
+
+export async function registerAuth(
     req: Request,
-    res: Response,
-): Promise<void> => {
-    try {
-        const validatedData = registerSchema.parse(req.body);
+    res: Response
+) {
+    const { email } = req.body
 
-        const result = await registerUser(
-            validatedData,
-        );
-        res.status(201).json({
-            success: true,
-            message: "OTP sent to your email",
-            data: result,
-        });
-    } catch (error) {
-        if (error instanceof Error) {
-            res.status(400).json({
-                success: false,
-                message: error.message,
-            });
+    const result = await sendOtp({
+        email,
+    });
 
-            return;
-        }
-
-        res.status(500).json({
-            success: false,
-            message: "Something went wrong",
-        });
-    }
-};
-
-export const verifyOtp = async (
-    req: Request,
-    res: Response,
-): Promise<void> => {
-    console.log('req', req);
-    try {
-        const validatedData = verifyOtpSchema.parse(req.body)
-        const result = await verifyRegistrationOtp(
-            validatedData,
-        );
-        res.status(201).json({
-            success: true,
-            message: "Email verify Succesfully",
-            data: result,
-        });
-
-    } catch (error) {
-        if (error instanceof Error) {
-            res.status(400).json({
-                success: false,
-                message: error.message,
-            });
-
-            return;
-        }
-
-        res.status(500).json({
-            success: false,
-            message: "Something went wrong",
-        });
-    }
+    return res.status(201).json({
+        success: true,
+        message: result.message,
+    });
 }

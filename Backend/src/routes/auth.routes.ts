@@ -1,11 +1,14 @@
 import { Router } from "express";
-import { register, verifyOtp, } from "../controllers/auth.controller";
+import { validate } from "../middleware/validate.middleware";
+import { registerAuth } from "../controllers/auth.controller";
+import { sendOtpSchema } from "../validations/auth.validation";
 
 const router = Router();
 
-router.post("/register", register);
-router.post("/verify-otp", verifyOtp);
+
+router.post("/send-otp", validate(sendOtpSchema), registerAuth)
+// router.post("/auth/register", validate(registerSchema), register);
+// router.post("/verify-otp", verifyOtp);
 
 export default router;
 
-// testc

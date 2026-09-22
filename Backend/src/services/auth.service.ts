@@ -1,149 +1,32 @@
-import bcrypt from "bcryptjs";
-import User from "../models/User";
-import { generateOtp } from "../utils/otp";
-import EmailVerification from "../models/EmailVerification";
+import * as userRepository from "../models/auth/user.repository"
+import { hashPassword } from "../utils/password"
 import { sendVerificationOtp } from "./email.service";
-import { generateAccessToken } from "../utils/jwt";
+import { createOtp } from "./otp.service";
 
 
-// import { generateAccessToken } from "../services";
-
-interface RegisterInput {
-    name: string,
-    email: string,
-}
-
-interface VerifyOtpInput {
+interface SendOtpInput {
     email: string;
-    otp: string;
 }
 
+export async function sendOtp(input: SendOtpInput) {
+    const email = input.email.toLowerCase().trim()
 
-export const registerUser = async ({
-    name,
-    email,
-
-}: RegisterInput) => {
-
-    const normalizedEmail = email.toLowerCase().trim()
-
-    let user = await User.findOne({
-        email: normalizedEmail,
-    });
-
-
-
+    let user = await userRepository.findUserByEmail(email);
     if (!user) {
-        user = await User.create({
-            name: name.trim(),
-            email: normalizedEmail,
-            role: "user",
+        await userRepository.createUser({
+            email,
+            passwordHash: null,
             isEmailVerified: false,
-            isActive: true,
+            role: "user",
         });
-    } else {
-        user.name = name.trim();
-        await user.save();
     }
-    const otp = generateOtp();
-    const otpHash = await bcrypt.hash(otp, 10);
 
-    const expiresInMinutes = Number(
-        process.env.OTP_EXPIRES_IN_MINUTES || 10,
-    );
 
-    const expiresAt = new Date(
-        Date.now() + expiresInMinutes * 60 * 1000,
-    );
-    await EmailVerification.findOneAndDelete({
-        userId: user._id,
-    });
-    await EmailVerification.create({
-        userId: user._id,
-        otpHash,
-        expiresAt,
-        attempts: 0,
-    });
-    await sendVerificationOtp(
-        normalizedEmail,
-        otp,
-    );
+    const otp = await createOtp(email)
+
+    await sendVerificationOtp(email, otp)
 
     return {
-        email: normalizedEmail,
-        expiresInMinutes,
+        message: `OTP sent successfully on ${email}`,
     };
 }
-
-
-export const verifyRegistrationOtp = async ({
-    otp,
-    email,
-}: VerifyOtpInput) => {
-
-    const normalizedEmail = email.toLowerCase().trim()
-
-    let user = await User.findOne({
-        email: normalizedEmail,
-    });
-
-    if (!user) {
-        throw new Error("User not found")
-    }
-
-
-    const verification = await EmailVerification.findOne({
-        userId: user._id
-    })
-
-    if (!verification) {
-        throw new Error(
-            "OTP not found or has expired",
-        );
-    }
-
-    if (verification.expiresAt < new Date()) {
-        await EmailVerification.deleteOne({
-            _id: verification._id,
-        });
-
-        throw new Error("OTP has expired");
-    }
-    const isOtpValid = await bcrypt.compare(
-        otp,
-        verification.otpHash,
-    );
-
-    if (!isOtpValid) {
-        verification.attempts += 1;
-        await verification.save();
-
-        throw new Error("Invalid OTP");
-    }
-
-    user.isEmailVerified = true;
-
-    await user.save();
-
-    await EmailVerification.deleteOne({
-        _id: verification._id,
-    });
-
-    const accessToken = generateAccessToken(
-        user._id.toString(),
-    );
-
-    return {
-        accessToken,
-        user: {
-            id: user._id,
-            name: user.name,
-            email: user.email,
-            role: user.role,
-            isEmailVerified: user.isEmailVerified,
-            isActive: user.isActive,
-        },
-    };
-
-}
-
