@@ -8,4 +8,8 @@ export function errorHandler(
 ) {
     console.log(error);
 
+    return res.status(500).json({
+        success: false,
+        message: "internal server error"
+    })
 }
