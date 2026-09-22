@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs"
 import * as otpRepository from '../models/auth/otp.repository'
 
 
+
 const OTP_EXPIRY_MINUTES = 5;
 
 
@@ -21,6 +22,7 @@ export async function createOtp(email: string) {
         Date.now() + OTP_EXPIRY_MINUTES * 60 * 1000,
     );
 
+
     await otpRepository.deleteOtpByEmail(email);
 
     await otpRepository.createOtp({
@@ -31,3 +33,4 @@ export async function createOtp(email: string) {
 
     return otp;
 }
+
