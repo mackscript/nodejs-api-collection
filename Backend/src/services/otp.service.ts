@@ -1,7 +1,7 @@
 import crypto from "node:crypto"
 import bcrypt from "bcryptjs"
 
-import * as otpRepository from '../models/auth/otp.repository'
+import * as otpRepository from '../repositories/otp.repository'
 
 
 

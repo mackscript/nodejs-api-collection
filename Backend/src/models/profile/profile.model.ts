@@ -12,8 +12,11 @@ export interface IProfile extends Document {
 
 const profileSchema = new Schema<IProfile>({
     userId: {
-        type: Schema.Types.ObjectId
-
+        type: Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
+        unique: true,
+        index: true,
     },
     name: {
         type: String,

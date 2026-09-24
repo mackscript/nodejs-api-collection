@@ -1,10 +1,10 @@
 import { AppError } from "../errors/app-error";
-import * as userRepository from "../models/auth/user.repository"
+import * as userRepository from "../repositories/user.repository"
 import { hashPassword } from "../utils/password"
 import { sendVerificationOtp } from "./email.service";
 import { createOtp } from "./otp.service";
 
-import * as otpRepository from '../models/auth/otp.repository'
+import * as otpRepository from '../repositories/otp.repository'
 import bcrypt from "bcryptjs";
 import { generateAccessToken } from "../utils/jwt";
 

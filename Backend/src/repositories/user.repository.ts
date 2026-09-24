@@ -1,4 +1,4 @@
-import { User, type IUser, type UserDocument } from "./user.model";
+import { User, type IUser, type UserDocument } from "../models/auth/user.model";
 
 
 export async function findUserByEmail(
@@ -21,6 +21,11 @@ export async function createUser(
     return User.create(data);
 }
 
+export async function findUserById(
+    id: string
+): Promise<UserDocument | null> {
+    return User.findById(id).exec();
+}
 
 export async function updateUserById(
     id: string,

@@ -1,5 +1,5 @@
 
-import { OtpModel, type Otp } from "./otp.modal";
+import { OtpModel, type Otp } from "../models/auth/otp.modal";
 
 
 
