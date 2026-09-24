@@ -21,6 +21,7 @@ export async function createProfileService(
     const existingProfile =
         await profileRepository.findProfileByUserId(userId);
 
+    console.log('existingProfile :>> ', existingProfile);
     if (existingProfile) {
         throw new AppError("Profile already exists");
     }
@@ -31,4 +32,46 @@ export async function createProfileService(
     );
 
     return result;
+}
+
+export async function getProfile(
+    userId: string
+): Promise<IProfile> {
+
+    const profile =
+        await profileRepository.findProfileByUserId(userId);
+
+    if (!profile) {
+        throw new AppError("Profile not found");
+    }
+
+    return profile;
+}
+
+
+
+export async function updateProfile(
+    userId: string,
+    data: Partial<IProfile>
+): Promise<IProfile> {
+
+    const profile =
+        await profileRepository.findProfileByUserId(userId);
+
+
+    if (!profile) {
+        throw new AppError("Profile not found");
+    }
+
+    const updatedProfile =
+        await profileRepository.updateProfileByUserId(
+            userId,
+            data
+        );
+
+    if (!updatedProfile) {
+        throw new AppError("Failed to update profile");
+    }
+
+    return updatedProfile;
 }

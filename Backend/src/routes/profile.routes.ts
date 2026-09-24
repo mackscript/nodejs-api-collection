@@ -1,11 +1,20 @@
 import { Router } from "express";
-import { createProfile } from "../controllers/profile.controller";
+import { createProfile, getMyProfile, updateMyProfile } from "../controllers/profile.controller";
 
 
 
 const profileRoute = Router()
 
-profileRoute.post('/create', createProfile)
 
+
+profileRoute.post('/create', createProfile)
+profileRoute.get(
+    "/me",
+    getMyProfile
+);
+profileRoute.patch(
+    "/update",
+    updateMyProfile
+);
 
 export default profileRoute;

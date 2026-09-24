@@ -23,7 +23,14 @@ export async function updateProfileByUserId(
     userId: string,
     data: Partial<IProfile>
 ): Promise<IProfile | null> {
-    return Profile.findByIdAndUpdate({
-        userId: new mongoose.Types.ObjectId(userId),
-    }, data, { new: true }).exec();
+    return Profile.findOneAndUpdate(
+        {
+            userId: new mongoose.Types.ObjectId(userId),
+        },
+        data,
+        {
+            new: true,
+            runValidators: true,
+        }
+    ).exec();
 }

@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from "express"
 import { asyncHandler } from "../middleware/async-handler"
-import { createProfileService } from "../services/profile.service"
+import { createProfileService, getProfile, updateProfile } from "../services/profile.service"
 
 
 
@@ -26,3 +26,36 @@ export const createProfile = asyncHandler(
 )
 
 
+
+export const getMyProfile = asyncHandler(
+    async (req: Request, res: Response) => {
+
+        const { userId } = req.body
+
+        const profile = await getProfile(userId);
+
+        return res.status(200).json({
+            success: true,
+            data: profile,
+            message: "Profile fetched successfully",
+        });
+    }
+);
+
+export const updateMyProfile = asyncHandler(
+    async (req: Request, res: Response) => {
+
+        const { userId, ...data } = req.body
+
+        const profile = await updateProfile(
+            userId,
+            data
+        );
+
+        return res.status(200).json({
+            success: true,
+            data: profile,
+            message: "Profile updated successfully",
+        });
+    }
+);
