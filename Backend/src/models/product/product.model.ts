@@ -17,19 +17,15 @@ export interface IProduct extends Document {
 }
 
 const productSchema = new Schema<IProduct>({
-
     title: {
         type: String,
         required: true,
         maxLength: 100,
         trim: true,
-        unique: true,
     },
     description: {
         type: String,
         trim: true,
-        unique: true,
-
     },
     category: {
         type: String,
@@ -63,7 +59,11 @@ const productSchema = new Schema<IProduct>({
         type: [String],
         default: [],
     },
-
+    stock: {
+        type: Number,
+        required: true,
+        min: 0,
+    },
     returnPolicy: {
         type: String,
         trim: true,
