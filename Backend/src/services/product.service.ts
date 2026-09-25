@@ -85,6 +85,8 @@ export async function getProductById(
     const product = await productRepository.findProductById(productId);
 
 
+    console.log('product :>> ', product);
+
     if (!product) {
         throw new AppError("Product not found", 404);
     }

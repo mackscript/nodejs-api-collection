@@ -69,14 +69,10 @@ export const getProductByIdController = asyncHandler(
         if (!productId || Array.isArray(productId)) {
             throw new AppError("Invalid product ID", 400);
         }
-
         const result = await getProductById(productId)
-
-        console.log('result :>> ', result);
-
         return res.status(200).json({
             success: true,
-            data: result,
+            data: result.product,
         })
     }
 )
