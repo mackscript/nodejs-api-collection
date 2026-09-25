@@ -4,6 +4,8 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 const JWT_EXPIRES_IN =
     (process.env.JWT_EXPIRES_IN || "15m") as SignOptions["expiresIn"];
+
+
 export interface AccessTokenPayload {
     userId: string;
     role: string;
@@ -17,7 +19,7 @@ export function generateAccessToken(
         throw new Error("JWT_SECRET is not defined");
     }
 
-    return jwt.sign(
+    const token = jwt.sign(
         {
             userId,
             role,
@@ -27,7 +29,24 @@ export function generateAccessToken(
             expiresIn: JWT_EXPIRES_IN,
         },
     );
+
+    console.log("GENERATED TOKEN:", token);
+    console.log("TOKEN PARTS:", token.split(".").length);
+
+
+    return token
 }
 
-// verifyAccessToken
-// auth.middleware.ts
+
+export function verifyAccessToken(
+    token: string
+): AccessTokenPayload {
+    if (!JWT_SECRET) {
+        throw new Error("JWT_SECRET is not defined");
+    }
+
+    return jwt.verify(
+        token,
+        JWT_SECRET
+    ) as AccessTokenPayload;
+}
