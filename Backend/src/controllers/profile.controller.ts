@@ -7,7 +7,10 @@ import { createProfileService, getProfile, updateProfile } from "../services/pro
 export const createProfile = asyncHandler(
     async (req: Request, res: Response, next: NextFunction) => {
 
-        const { userId, ...data } = req.body
+
+        const userId = req.user?.userId
+        const data = req.body
+
 
 
         const profile = await createProfileService(
@@ -30,7 +33,7 @@ export const createProfile = asyncHandler(
 export const getMyProfile = asyncHandler(
     async (req: Request, res: Response) => {
 
-        const { userId } = req.body
+        const userId = req.user?.userId
 
         const profile = await getProfile(userId);
 
@@ -45,8 +48,10 @@ export const getMyProfile = asyncHandler(
 export const updateMyProfile = asyncHandler(
     async (req: Request, res: Response) => {
 
-        const { userId, ...data } = req.body
+        const userId = req.user?.userId
+        const data = req.body
 
+        console.log('userId :>> ', userId);
         const profile = await updateProfile(
             userId,
             data

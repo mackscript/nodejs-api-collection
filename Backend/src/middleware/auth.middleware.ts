@@ -28,7 +28,7 @@ export const authmiddleware = asyncHandler(
             throw new AppError("Token missing", 401);
         }
 
-        console.log('token :>> ', token);
+
         const decoded = verifyAccessToken(token);
 
         (req as Request & {
@@ -39,3 +39,4 @@ export const authmiddleware = asyncHandler(
         next();
     }
 );
+
