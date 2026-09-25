@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createProduct, updateProductController } from "../controllers/product.controller";
+import { createProduct, getProductsController, updateProductController } from "../controllers/product.controller";
 import { authmiddleware } from "../middleware/auth.middleware";
 import { validate } from "../middleware/validate.middleware";
 import { createProductSchema, updateProductSchema } from "../validations/product.validation";
@@ -14,4 +14,10 @@ productRoute.patch(
     validate(updateProductSchema),
     updateProductController
 );
+
+productRoute.get(
+    "/",
+    getProductsController
+);
+
 export default productRoute;

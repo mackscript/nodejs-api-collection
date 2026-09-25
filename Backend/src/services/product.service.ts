@@ -50,3 +50,29 @@ export async function updateProduct(
 
     return updatedProduct;
 }
+
+export async function getProducts(
+    page: number,
+    limit: number
+) {
+    const skip = (page - 1) * limit;
+
+    const [products, totalProducts] = await Promise.all([
+        productRepository.findProducts(skip, limit),
+        productRepository.countProducts(),
+    ]);
+
+    const totalPages = Math.ceil(
+        totalProducts / limit
+    );
+
+    return {
+        products,
+        pagination: {
+            page,
+            limit,
+            totalProducts,
+            totalPages,
+        },
+    };
+}

@@ -27,3 +27,21 @@ export async function updateProductById(
         }
     ).exec();
 }
+
+export async function findProducts(
+    skip: number,
+    limit: number
+): Promise<IProduct[]> {
+    return Product
+        .find()
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .exec();
+}
+
+
+
+export async function countProducts(): Promise<number> {
+    return Product.countDocuments().exec();
+}
