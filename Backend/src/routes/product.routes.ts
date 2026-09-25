@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createProduct, getProductsController, updateProductController } from "../controllers/product.controller";
+import { createProduct, getProductByIdController, getProductsController, updateProductController } from "../controllers/product.controller";
 import { authmiddleware } from "../middleware/auth.middleware";
 import { validate } from "../middleware/validate.middleware";
 import { createProductSchema, updateProductSchema } from "../validations/product.validation";
@@ -19,5 +19,11 @@ productRoute.get(
     "/",
     getProductsController
 );
+productRoute.get(
+    "/:productId",
+    getProductByIdController
+);
+
+
 
 export default productRoute;

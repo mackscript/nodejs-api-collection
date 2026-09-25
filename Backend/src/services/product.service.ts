@@ -76,3 +76,21 @@ export async function getProducts(
         },
     };
 }
+
+export async function getProductById(
+    productId: string,
+
+) {
+
+    const product = await productRepository.findProductById(productId);
+
+
+    if (!product) {
+        throw new AppError("Product not found", 404);
+    }
+
+
+    return {
+        product
+    };
+}

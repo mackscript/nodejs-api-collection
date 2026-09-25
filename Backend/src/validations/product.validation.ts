@@ -43,8 +43,7 @@ export const createProductSchema = z.object({
         .min(0, "Stock cannot be negative"),
 
     images: z
-        .array(z.string().url("Invalid image URL"))
-        .default([]),
+        .array(z.string().url("Invalid image URL")),
 
     returnPolicy: z
         .string()

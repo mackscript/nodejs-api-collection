@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import { asyncHandler } from "../middleware/async-handler";
-import { createProductService, getProducts, updateProduct } from "../services/product.service";
+import { createProductService, getProductById, getProducts, updateProduct } from "../services/product.service";
 import { AppError } from "../errors/app-error";
 
 export const createProduct = asyncHandler(
@@ -61,3 +61,22 @@ export const getProductsController = asyncHandler(
         });
     }
 );
+
+export const getProductByIdController = asyncHandler(
+    async (req: Request, res: Response) => {
+        const { productId } = req.params;
+
+        if (!productId || Array.isArray(productId)) {
+            throw new AppError("Invalid product ID", 400);
+        }
+
+        const result = await getProductById(productId)
+
+        console.log('result :>> ', result);
+
+        return res.status(200).json({
+            success: true,
+            data: result,
+        })
+    }
+)
