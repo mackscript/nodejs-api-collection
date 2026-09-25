@@ -24,6 +24,7 @@ const profileSchema = new Schema<IProfile>({
         maxLength: 100,
     },
 
+
     phNumber: {
         type: String,
         trim: true,

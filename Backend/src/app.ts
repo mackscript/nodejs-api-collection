@@ -4,6 +4,7 @@ import express from 'express'
 import { errorHandler } from './middleware/error-handler';
 import authRoutes from './routes/auth.routes'
 import profileRoute from './routes/profile.routes';
+import productRoute from './routes/product.routes';
 
 const app = express()
 
@@ -19,7 +20,7 @@ app.get("/", (req, res) => {
 
 app.use('/api/v1/auth', authRoutes)
 app.use('/api/v1/profile', profileRoute)
-
+app.use('/api/v1/product', productRoute)
 app.use(errorHandler)
 
 
